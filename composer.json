@@ -1,0 +1,22 @@
+{
+    "name": "codeinternetapplications/shopify-oauth",
+    "description": "Oauth 2.0 authentication for Shopify public apps",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Patrick Watzeels",
+            "email": "patrick@code.nl"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "guzzlehttp/guzzle": "^6.2",
+        "league/oauth2-client": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodeInternetApplications\\ShopifyOauth\\": "src/"
+        }
+    }
+}
