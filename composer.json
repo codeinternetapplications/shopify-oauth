@@ -1,6 +1,8 @@
 {
     "name": "codeinternetapplications/shopify-oauth",
-    "description": "Oauth 2.0 authentication for Shopify public apps",
+    "description": "Oauth 2.0 authentication for Shopify apps",
+    "keywords": ["shopify", "oauth", "authentication", "laravel", "lumen"],
+    "homepage": "https://github.com/codeinternetapplications/shopify-oauth",
     "type": "library",
     "license": "MIT",
     "authors": [
