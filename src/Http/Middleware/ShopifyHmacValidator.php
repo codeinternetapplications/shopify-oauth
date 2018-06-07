@@ -51,6 +51,9 @@ class ShopifyHmacValidator
         // build the http query string
         $httpQuery = http_build_query($request->except('_url', 'hmac'));
 
+        // urldecode to make sure that elements like protocols are not encoded the hmac check wil fail on that
+        $httpQuery = urldecode($httpQuery);
+
         return hash_hmac('sha256', $httpQuery, config('shopify_oauth.api_secret_key'));
     }
 }
