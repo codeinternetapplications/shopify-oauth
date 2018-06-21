@@ -15,78 +15,56 @@ composer require codeinternetapplications/shopify-oauth
 
 ## Configuration
 
-1. Copy the `shopify_oauth.php` config file to your config directory.
-2. When using Lumen make sure you add the configuration in your `bootstrap/app.php` file
-3. Set your `api_key` and `api_secret_key`. Also make sure you have configured the `scopes` properly.
+We tried to make it as easy as possible. Perform these steps to start:
 
+### Copy config file
+Copy the `shopify_oauth.php` config file to your config directory and make it available in the `bootstrap/app.php` file.
 
-## Usage
+### Adjust your keys in the config
+Set your `api_key`, `api_secret_key` and `base_url`. Also adjust your `scopes`. You can use the `.env` file for this (see below)
 
-To start the OAuth handshake process with Shopify make sure you know what kind of access token you need. Shopify provides an `online` token and an `offline` token.
-[Click here for more information on this](https://help.shopify.com/api/getting-started/authentication/oauth/api-access-modes).
-
-Make sure your callback uri is whitelisted in the [Parners Dashboard](https://partners.shopify.com/) of Shopify.
-
-
-```php
-
-use CodeInternetApplications\ShopifyOauth\Client\ShopifyOauthClient;
-
-...
-
-// set the callback uri
-$callback_uri = 'https://uri-to-the-callback-endpoint';
-
-// put this on 'true' when you want to request an online token.
-$use_online_mode = false;
-
-// this will start the handshake with Shopify and redirects the user to Shopify for the grant request
-(new ShopifyOauthClient($request->get('shop')))->initHandshake($callback_uri, $use_online_mode);
-```
-
-You can make an authentication request by navigation to the route where your authentication takes places.
-Add this suffix to the url `?shop=<< URL of your shop >>`. You will have to make sure that the URL of your shop ends with `myshopify.com`.
-
-
-Handling the callback is also easy
-
-```php
-
-use CodeInternetApplications\ShopifyOauth\Client\ShopifyOauthClient;
-
-...
-
-// oauth client
-$client = new ShopifyOauthClient($request->get('shop'));
-
-// this will return the token
-$auth_code = $client->processCallback($request->get('code'));
+#### Environment file
+Put these variables in your `.env` file:
 
 ```
+SHOPIFY_APP_BASE_URL=https://url-to-your-app/
+SHOPIFY_OAUTH_API_KEY=<API key obtained from the partner dashboard>
+SHOPIFY_OAUTH_SECRET_KEY=<API Secret key obtained from the partner dashboard>
+```
 
-You can additionally use these methods on the `ShopifyOauthClient` helper:
-* getResourceOwner() : This will return the Shop information for the granted shop. You can use this method directly after handling the callback
-* getAccessTokenValues() : This provides the additional values with the Token. For `online` access it will provide the associated user.
-* getAccessToken() : This provides the token (string) that you can use as `X-Shopify-Access-Token` header.
-
-
-## Middlewares
-
-We have created 2 middlewares you can use to verify the validity or the requests.
-* `ShopifyHostnameValidator`
-* `ShopifyHmacValidator`
-
-### ShopifyHostnameValidator
-The `ShopifyHostnameValidator` middleware is used to verify the 'shop' parameter in incoming and outgoing requests.
-It checks if:
-* The requesting shop ends with `myshopify.com`
-* The URL does only contain letters (a-z) and numbers (0-9), dots and hyphens
+### Register the ShopifyOauthServiceProvider
+Register the `ShopifyOauthServiceProvider` in your application.
 
 
-### ShopifyHmacValidator
-The `ShopifyHmacValidator` middleware is specific for responses from Shopify. Note that this middleware will only work for this authorization request. It cannot be used to verify Webhook requests.
+### Run migrations
+Run the migrations so you get the `con_shops` and `con_shop_access_tokens` table.
+```
+php artisan migrate
+```
 
 
+## Usage of Middleware
 
-## ToDo
-* Implement tests
+Make sure that when you want to use the `online token` you will have to add the Middleware `shopify-oauth-handler`.
+It is advisable to use these middlewares in your routes:
+* shopify-hostname-validation
+* shopify-hmac-validation
+* shopify-oauth-handler
+
+For example:
+```php
+
+$router->group([
+    'middleware'    => [
+        'shopify-hostname-validation',
+        'shopify-hmac-validation',
+        'shopify-oauth-handler',
+    ]
+], function() use ($router) {
+
+    // Redirect to Polaris view
+    $router->addRoute(['GET','POST','PUT'], '/[{page}]', function () {
+        return view('polaris');
+    });
+});
+```

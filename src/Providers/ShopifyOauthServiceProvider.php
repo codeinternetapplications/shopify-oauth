@@ -16,6 +16,11 @@ class ShopifyOauthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // force the root URL if available (base url)
+        if ($app_url = env('SHOPIFY_APP_BASE_URL','')) {
+            \URL::forceRootUrl($app_url);
+        }
+
         // validate oauth requests
         $this->app->routeMiddleware([
             'shopify-hostname-validation'    => \CodeInternetApplications\ShopifyOauth\Http\Middleware\ShopifyHostnameValidator::class,
