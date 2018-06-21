@@ -1,6 +1,15 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | App Base URL
+    |--------------------------------------------------------------------------
+    |
+    | This is the URL where your app start. Users are redirected to this URL
+    | when the online token was obtained.
+    */
+    'base_url'           => env('SHOPIFY_APP_BASE_URL', ''),
 
     /*
     |--------------------------------------------------------------------------

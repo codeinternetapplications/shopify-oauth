@@ -24,6 +24,16 @@ class ShopifyResource implements ResourceOwnerInterface
     }
 
     /**
+     * Get the raw response
+     *
+     * @return array
+     */
+    public function getResponse()
+    {
+        return data_get($this->response, 'shop');
+    }
+
+    /**
      * Get the ID
      *
      * @return string

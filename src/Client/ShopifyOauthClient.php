@@ -5,6 +5,8 @@ namespace CodeInternetApplications\ShopifyOauth\Client;
 use GuzzleHttp\Client;
 use CodeInternetApplications\ShopifyOauth\Client\Provider\ShopifyProvider;
 use CodeInternetApplications\ShopifyOauth\Exceptions\ShopifyOauthCallbackException;
+use CodeInternetApplications\ShopifyOauth\Facades\ShopifyShop;
+use CodeInternetApplications\ShopifyOauth\Facades\ShopifyShopAccessToken;
 use Illuminate\Http\Request;
 
 /**
@@ -88,6 +90,14 @@ class ShopifyOauthClient
 
             // obtain the access token
             $this->access_token = $provider->getAccessToken('authorization_code', ['code' => $auth_code]);
+
+            // store shop data
+            if ($shop = ShopifyShop::storeResource($this->getResourceOwner())) {
+
+                // store token information
+                ShopifyShopAccessToken::storeResource($shop, $this->access_token, $this->getAccessTokenValues());
+            }
+
         } catch (\Exception $e) {
             throw new ShopifyOauthCallbackException('Something went wrong: '. $e->getMessage());
         }

@@ -16,6 +16,10 @@ class ShopifyHmacValidator
      */
     public function handle($request, Closure $next)
     {
+        // guard: check only if we are in production
+        if (env('APP_ENV') != 'production') {
+            return $next($request);
+        }
         // guard: check for the hmac param
         if (!$hmac_param = $request->query('hmac')) {
             return response('Bad request, hmac parameter not found', 400);

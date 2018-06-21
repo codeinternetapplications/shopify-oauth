@@ -15,6 +15,10 @@ class ShopifyHostnameValidator
      */
     public function handle($request, Closure $next)
     {
+        // guard: check only if we are in production
+        if (env('APP_ENV') != 'production') {
+            return $next($request);
+        }
         // guard
         if (!$shop_uri = $request->query('shop')) {
             return response('Bad request, please provide the Shop parameter', 400);
