@@ -47,9 +47,12 @@ class ShopifyShop
         // get response data
         $shop_response = $shop_resource->getResponse();
 
+        // set shop id
+        $shop_id = data_get($shop_response, 'id');
+
         // get shop or create new one
         $shop = Shop::firstOrNew([
-            'id'    => data_get($shop_response, 'id'),
+            'id'    => $shop_id,
         ]);
 
         // loop fields and store data
@@ -59,7 +62,8 @@ class ShopifyShop
 
         // save and return fresh instance
         $shop->save();
-        return $shop->fresh();
+
+        return Shop::find($shop_id);
     }
 }
 
