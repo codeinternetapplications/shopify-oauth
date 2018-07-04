@@ -23,6 +23,12 @@ class ShopifyOauthClient
     protected $shop;
 
     /**
+     * Shop Resource
+     * @param Model Shop
+     */
+    protected $shop_resource;
+
+    /**
      * Access token
      * @param string
      */
@@ -92,10 +98,10 @@ class ShopifyOauthClient
             $this->access_token = $provider->getAccessToken('authorization_code', ['code' => $auth_code]);
 
             // store shop data
-            if ($shop = ShopifyShop::storeResource($this->getResourceOwner())) {
+            if ($this->shop_resource = ShopifyShop::storeResource($this->getResourceOwner())) {
 
                 // store token information
-                ShopifyShopAccessToken::storeResource($shop, $this->access_token, $this->getAccessTokenValues());
+                ShopifyShopAccessToken::storeResource($this->shop_resource, $this->access_token, $this->getAccessTokenValues());
             }
 
         } catch (\Exception $e) {
@@ -103,6 +109,15 @@ class ShopifyOauthClient
         }
 
         return $this->access_token->getToken();
+    }
+
+    /**
+     * Get the shop resource (model)
+     * @return Shop resource
+     */
+    public function getShopResource()
+    {
+        return $this->shop_resource;
     }
 
     /**
