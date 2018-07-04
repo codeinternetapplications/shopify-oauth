@@ -13,7 +13,7 @@ class ShopifyProvider extends AbstractProvider
      * String that is prepended as 'Base URI' for Shopify
      * @var string
      */
-	protected $shop;
+    protected $shop;
 
     /**
      * Returns the base URL for authorizing a client.
@@ -24,7 +24,7 @@ class ShopifyProvider extends AbstractProvider
      */
     public function getBaseAuthorizationUrl()
     {
-    	return 'https://'. $this->shop .'/admin/oauth/authorize';
+        return 'https://'. $this->shop .'/admin/oauth/authorize';
     }
 
     /**
@@ -37,7 +37,7 @@ class ShopifyProvider extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-    	return 'https://'.$this->shop.'/admin/oauth/access_token';
+        return 'https://'.$this->shop.'/admin/oauth/access_token';
     }
 
     /**
@@ -48,7 +48,7 @@ class ShopifyProvider extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-    	return 'https://'. $this->shop .'/admin/shop.json';
+        return 'https://'. $this->shop .'/admin/shop.json';
     }
 
     /**
@@ -91,7 +91,7 @@ class ShopifyProvider extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-    	return config('shopify_oauth.scopes');
+        return config('shopify_oauth.scopes');
     }
 
     /**

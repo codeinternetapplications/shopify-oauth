@@ -4,6 +4,7 @@ namespace CodeInternetApplications\ShopifyOauth\Http\Controllers;
 
 use Carbon\Carbon;
 use CodeInternetApplications\ShopifyOauth\Client\ShopifyOauthClient;
+use CodeInternetApplications\ShopifyOauth\Events\PostShopifyCallbackEvent;
 use CodeInternetApplications\ShopifyOauth\Exceptions\ShopifyOauthCallbackException;
 
 use Illuminate\Http\Request;
@@ -36,6 +37,11 @@ class ShopifyOauthController extends BaseController
         try {
             $client = new ShopifyOauthClient($request->get('shop'));
             $client->processCallback($request->get('code'));
+
+            // trigger event so we implement additional scripts outside the package
+            if ($shop_resource = $client->getShopResource()) {
+                event(new PostShopifyCallbackEvent($shop_resource));
+            }
 
             // set shopify app uri
             $shopify_app_uri = 'https://'. $request->get('shop') .'/admin/apps/'. config('shopify_oauth.api_key');

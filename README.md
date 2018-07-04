@@ -68,3 +68,60 @@ $router->group([
     });
 });
 ```
+
+## Execute scripts after installation
+To install webhooks or trigger something right after the installation of the application you will have to implement an event listener into your app.
+
+When the App is installed an event is triggered. You can listen to this event and implement custom actions such as:
+- Install webhooks
+- Trigger some data imports
+
+### Create listener and listen
+Open your `bootstrap/app.php` file and make sure that the `EventServiceProvider` is enabled.
+
+Open the `EventServiceProvider.php` file and add these lines:
+
+```php
+    protected $listen = [
+        'CodeInternetApplications\ShopifyOauth\Events\PostShopifyCallbackEvent' => [
+            'App\Listeners\PostShopifyCallbackListener',  // assuming that your listener is located at App\Listeners\PostShopifyCallbackListener
+        ],
+    ];
+```
+
+Create a new local listener in your `app/Listeners` folder and add the scripts you want to perform. You can start with this template:
+
+```php
+<?php
+
+namespace App\Listeners;
+
+use CodeInternetApplications\ShopifyOauth\Events\PostShopifyCallbackEvent;
+
+class PostShopifyCallbackListener
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  PostShopifyCallbackEvent  $event
+     * @return void
+     */
+    public function handle(PostShopifyCallbackEvent $event)
+    {
+        // log
+        \Log::channel('stack')->info('PostShopifyCallbackEvent is triggered', []);
+    }
+}
+
+
+```

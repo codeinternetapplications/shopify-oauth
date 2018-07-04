@@ -23,7 +23,6 @@ class ShopifyShopAccessToken
     protected $request_response_fields = [
         'scope'                                 => 'scope',
         'associated_user_scope'                 => 'associated_user_scope',
-        'associated_user.id'                    => 'associated_user_id',
         'associated_user.account_owner'         => 'associated_user_account_owner',
     ];
 
@@ -37,7 +36,7 @@ class ShopifyShopAccessToken
     {
         // get tokens
         $shop_access_token = $shop->access_tokens()->firstOrNew([
-            'associated_user_id'  => data_get($token_info_arr, 'associated_user.id', 0),
+            'associated_user_id'  => data_get($token_info_arr, 'associated_user.id') ?? '0',
         ]);
 
         // set token

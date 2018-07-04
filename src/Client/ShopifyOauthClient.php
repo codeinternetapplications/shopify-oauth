@@ -45,18 +45,18 @@ class ShopifyOauthClient
         $this->shop = strtolower($shop);
     }
 
-	/**
-	 * Init the OAuth handshake for Shopify
-	 *
+    /**
+     * Init the OAuth handshake for Shopify
+     *
      * @param string redirect uri
      * @param boolean online access mode (optional, FALSE by default so offline access mode is used)
-	 * @return void
-	 */
-	public function initHandshake($redirect_uri, $online_access_mode=FALSE)
-	{
+     * @return void
+     */
+    public function initHandshake($redirect_uri, $online_access_mode=FALSE)
+    {
         // set options (these will be appended to the default options)
         $option_arr = [
-		    'redirectUri'   => $redirect_uri
+            'redirectUri'   => $redirect_uri
         ];
 
         // append extra option value when online access is requested
@@ -68,10 +68,10 @@ class ShopifyOauthClient
         // set provider
         $provider = $this->getShopifyOauth2Provider($option_arr);
 
-		// redirect the user to the authentication screen of Shopify
-		header('Location: '. $provider->getAuthorizationUrl($extra_option_arr));
-		exit;
-	}
+        // redirect the user to the authentication screen of Shopify
+        header('Location: '. $provider->getAuthorizationUrl($extra_option_arr));
+        exit;
+    }
 
     /**
      * Process callback for app
@@ -110,7 +110,7 @@ class ShopifyOauthClient
      *
      * @return ShopifyResource
      */
-    public function getResourceOwner()
+    protected function getResourceOwner()
     {
         // guard
         if (!$this->access_token) {
@@ -137,7 +137,7 @@ class ShopifyOauthClient
      *
      * @return array
      */
-    public function getAccessTokenValues()
+    protected function getAccessTokenValues()
     {
         return $this->access_token->getValues();
     }
@@ -147,41 +147,10 @@ class ShopifyOauthClient
      *
      * @return string
      */
-    public function getAccessToken()
+    protected function getAccessToken()
     {
         return $this->access_token->getToken();
     }
-
-	/**
-	 * Verify the the hostnane, must end with .myshopify.com
-	 *
-	 * @param string shop uri
-	 * @param array options
-	 * @return ShopifyProvider
-	 */
-	private function getShopifyOauth2Provider($addional_option_arr=[])
-	{
-        // guard
-        if (!is_null($this->provider)) {
-            return $this->provider;
-        }
-
-		// set basic options
-		$options = [
-		    'clientId'      => config('shopify_oauth.api_key'),
-		    'clientSecret'  => config('shopify_oauth.api_secret_key'),
-		    'shop'			=> $this->shop,
-		];
-
-        // merge options
-        $options = array_merge($options, $addional_option_arr);
-
-        // set provider
-        $this->provider = new ShopifyProvider($options);
-
-		// create oauth2
-		return $this->provider;
-	}
 
     /**
      * Get an error response
@@ -199,5 +168,36 @@ class ShopifyOauthClient
             ],
             $http_response_code
         );
+    }
+
+    /**
+     * Verify the the hostnane, must end with .myshopify.com
+     *
+     * @param string shop uri
+     * @param array options
+     * @return ShopifyProvider
+     */
+    private function getShopifyOauth2Provider($addional_option_arr=[])
+    {
+        // guard
+        if (!is_null($this->provider)) {
+            return $this->provider;
+        }
+
+        // set basic options
+        $options = [
+            'clientId'      => config('shopify_oauth.api_key'),
+            'clientSecret'  => config('shopify_oauth.api_secret_key'),
+            'shop'          => $this->shop,
+        ];
+
+        // merge options
+        $options = array_merge($options, $addional_option_arr);
+
+        // set provider
+        $this->provider = new ShopifyProvider($options);
+
+        // create oauth2
+        return $this->provider;
     }
 }
