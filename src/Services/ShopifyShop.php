@@ -63,9 +63,7 @@ class ShopifyShop
         // save and return fresh instance
         $shop->save();
 
-        $shop = $shop->fresh();
-
-        return $shop;
+        return Shop::find($shop_id);
     }
 }
 
