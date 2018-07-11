@@ -18,7 +18,7 @@ class ShopifyOauthServiceProvider extends ServiceProvider
     {
         // force the root URL if available (base url)
         if ($app_url = env('SHOPIFY_APP_BASE_URL','')) {
-            \URL::forceRootUrl($app_url);
+            $this->app->make('url')->forceRootUrl($app_url);
         }
 
         // validate oauth requests

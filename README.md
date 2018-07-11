@@ -23,6 +23,14 @@ Copy the `shopify_oauth.php` config file to your config directory and make it av
 ### Adjust your keys in the config
 Set your `api_key`, `api_secret_key` and `base_url`. Also adjust your `scopes`. You can use the `.env` file for this (see below)
 
+### Make sure your app supports Facades and Eloquent
+In Lumen you will have to uncomment these lines in `bootstrap/app.php`:
+```php
+// $app->withFacades();
+
+// $app->withEloquent();
+```
+
 #### Environment file
 Put these variables in your `.env` file:
 
@@ -31,6 +39,8 @@ SHOPIFY_APP_BASE_URL=https://url-to-your-app/
 SHOPIFY_OAUTH_API_KEY=<API key obtained from the partner dashboard>
 SHOPIFY_OAUTH_SECRET_KEY=<API Secret key obtained from the partner dashboard>
 ```
+
+Also make sure that your `APP_KEY` is defined. Since we encrypt some data in the database Lumen/Laravel needs this key to encrypt it.
 
 ### Register the ShopifyOauthServiceProvider
 Register the `ShopifyOauthServiceProvider` in your application.

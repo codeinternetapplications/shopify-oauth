@@ -2,11 +2,14 @@
 
 namespace CodeInternetApplications\ShopifyOauth\Models;
 
+use CodeInternetApplications\ShopifyOauth\Traits\Encrypter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class ShopAccessToken extends Model
 {
+    use Encrypter;
+
     /**
      * The table associated with the model.
      *
@@ -32,6 +35,14 @@ class ShopAccessToken extends Model
 
         // Shop Id
         'shop_id',
+    ];
+
+    /**
+     * Set the encrypted fields
+     * @var array
+     */
+    protected $encrypted_fields = [
+        'access_token',
     ];
 
     /**
